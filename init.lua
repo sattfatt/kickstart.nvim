@@ -558,6 +558,17 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         gopls = {},
+
+        templ = {},
+
+        html = {
+          filetypes = { 'html', 'templ' },
+        },
+
+        tailwindcss = {
+          filetypes = { 'templ' },
+          init_options = { templ = 'html' },
+        },
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -566,8 +577,21 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
         --
+
+        volar = {
+          filetypes = { 'vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
+          init_options = {
+            vue = {
+              hybridMode = false,
+            },
+            typescript = {
+              tsdk = vim.fn.getcwd() .. '/node_modules/typescript/lib',
+            },
+          },
+        },
+
+        tsserver = {},
 
         lua_ls = {
           -- cmd = {...},
