@@ -383,6 +383,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sc', builtin.git_status, { desc = '[S]earch git [C]hanges' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>sj', builtin.jumplist, { desc = '[S]earch [J]ump List' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
@@ -555,20 +556,26 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      vim.filetype.add { extension = { templ = 'templ' } }
+
       local servers = {
         -- clangd = {},
         gopls = {},
 
         templ = {},
 
+        unocss = {
+          filetypes = { 'templ' },
+        },
+
+        -- tailwindcss = {
+        --   filetypes = { 'templ', 'astro', 'javascript', 'typescript', 'react', 'html' },
+        -- },
+
         html = {
           filetypes = { 'html', 'templ' },
         },
 
-        tailwindcss = {
-          filetypes = { 'templ' },
-          init_options = { templ = 'html' },
-        },
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -579,19 +586,19 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         --
 
-        volar = {
-          filetypes = { 'vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
-          init_options = {
-            vue = {
-              hybridMode = false,
-            },
-            typescript = {
-              tsdk = vim.fn.getcwd() .. '/node_modules/typescript/lib',
-            },
-          },
-        },
-
-        tsserver = {},
+        -- volar = {
+        --   filetypes = { 'vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
+        --   init_options = {
+        --     vue = {
+        --       hybridMode = false,
+        --     },
+        --     typescript = {
+        --       tsdk = vim.fn.getcwd() .. '/node_modules/typescript/lib',
+        --     },
+        --   },
+        -- },
+        --
+        -- tsserver = {},
 
         lua_ls = {
           -- cmd = {...},
