@@ -110,6 +110,8 @@ vim.opt.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+vim.cmd 'set noexpandtab sts=4 sw=4'
+
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
@@ -227,6 +229,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  'cohama/lexima.vim',
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -556,7 +559,7 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      vim.filetype.add { extension = { templ = 'templ' } }
+      -- vim.filetype.add { extension = { templ = 'templ' } }
 
       local servers = {
         -- clangd = {},
@@ -564,12 +567,18 @@ require('lazy').setup({
 
         templ = {},
 
-        unocss = {
-          filetypes = { 'templ' },
-        },
-
         html = {
           filetypes = { 'html', 'templ' },
+        },
+
+        tailwindcss = {
+          settings = {
+            tailwindCSS = {
+              includeLanguages = {
+                templ = 'html',
+              },
+            },
+          },
         },
 
         -- pyright = {},
@@ -582,19 +591,24 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         --
 
-        -- volar = {
-        --   filetypes = { 'vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
-        --   init_options = {
-        --     vue = {
-        --       hybridMode = false,
-        --     },
-        --     typescript = {
-        --       tsdk = vim.fn.getcwd() .. '/node_modules/typescript/lib',
-        --     },
-        --   },
-        -- },
-        --
-        tsserver = {},
+        tsserver = {
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = '/Users/satyampatel/.nvm/versions/node/v20.15.0/lib',
+                languages = { 'javascript', 'typescript', 'vue' },
+              },
+            },
+          },
+          filetypes = {
+            'javascript',
+            'typescript',
+            'vue',
+          },
+        },
+
+        volar = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -670,6 +684,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        templ = { 'templ' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -700,12 +715,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -897,7 +912,35 @@ require('lazy').setup({
       { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
     },
   },
-
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    config = true,
+    keys = {
+      { '<leader>tf', '<cmd>ToggleTerm direction=float<cr>', { desc = '[T]oggle [F]loating terminal' } },
+    },
+  },
+  {
+    'https://git.sr.ht/~havi/telescope-toggleterm.nvim',
+    event = 'TermOpen',
+    requires = {
+      'akinsho/nvim-toggleterm.lua',
+      'nvim-telescope/telescope.nvim',
+      'nvim-lua/popup.nvim',
+      'nvim-lua/plenary.nvim',
+    },
+    config = function()
+      require('telescope').load_extension 'toggleterm'
+    end,
+  },
+  {
+    'kylechui/nvim-surround',
+    version = '*', -- Use for stability; omit to use `main` branch for the latest features
+    event = 'VeryLazy',
+    config = function()
+      require('nvim-surround').setup {}
+    end,
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
