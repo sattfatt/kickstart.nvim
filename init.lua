@@ -591,24 +591,11 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         --
 
-        tsserver = {
-          init_options = {
-            plugins = {
-              {
-                name = '@vue/typescript-plugin',
-                location = '/Users/satyampatel/.nvm/versions/node/v20.15.0/lib',
-                languages = { 'javascript', 'typescript', 'vue' },
-              },
-            },
-          },
-          filetypes = {
-            'javascript',
-            'typescript',
-            'vue',
-          },
+        volar = {
+          filetypes = { 'vue', 'json', 'typescript', 'javascript' },
         },
 
-        volar = {},
+        eslint = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -685,6 +672,9 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         templ = { 'templ' },
+        vue = { 'prettier' },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
