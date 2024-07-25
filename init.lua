@@ -107,6 +107,8 @@ vim.opt.number = true
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
 
+vim.opt.wrap = false
+
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
@@ -551,7 +553,7 @@ require('lazy').setup({
           -- This may be unwanted, since they displace some of your code
           if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
             map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(event.buf))
             end, '[T]oggle Inlay [H]ints')
           end
         end,
@@ -946,14 +948,14 @@ require('lazy').setup({
       require('telescope').load_extension 'toggleterm'
     end,
   },
-  {
-    'kylechui/nvim-surround',
-    version = '*', -- Use for stability; omit to use `main` branch for the latest features
-    event = 'VeryLazy',
-    config = function()
-      require('nvim-surround').setup {}
-    end,
-  },
+  -- {
+  --   'kylechui/nvim-surround',
+  --   version = '*', -- Use for stability; omit to use `main` branch for the latest features
+  --   event = 'VeryLazy',
+  --   config = function()
+  --     require('nvim-surround').setup {}
+  --   end,
+  -- },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -975,12 +977,12 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  {
-    'klen/nvim-test',
-    config = function()
-      require('nvim-test').setup()
-    end,
-  },
+  -- {
+  --   'klen/nvim-test',
+  --   config = function()
+  --     require('nvim-test').setup()
+  --   end,
+  -- },
   {
     'ThePrimeagen/refactoring.nvim',
     dependencies = {
@@ -994,47 +996,6 @@ require('lazy').setup({
     end,
   },
 
-  {
-    'nvim-neotest/neotest',
-    dependencies = {
-      'nvim-neotest/nvim-nio',
-      'nvim-lua/plenary.nvim',
-      'antoinemadec/FixCursorHold.nvim',
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-neotest/neotest-go',
-    },
-  },
-
-  {
-    'nvim-neotest/neotest',
-    requires = {
-      'nvim-neotest/neotest-go',
-      -- Your other test adapters here
-    },
-    config = function()
-      -- get neotest namespace (api call creates or returns namespace)
-      local neotest_ns = vim.api.nvim_create_namespace 'neotest'
-      vim.diagnostic.config({
-        virtual_text = {
-          format = function(diagnostic)
-            local message = diagnostic.message:gsub('\n', ' '):gsub('\t', ' '):gsub('%s+', ' '):gsub('^%s+', '')
-            return message
-          end,
-        },
-      }, neotest_ns)
-      require('neotest').setup {
-        -- your neotest config here
-        adapters = {
-          require 'neotest-go',
-        },
-      }
-
-      vim.keymap.set('n', '<leader>te', function()
-        require('neotest').run.run()
-        require('neotest').output_panel.open()
-      end, { desc = '[T][E]st function' })
-    end,
-  },
   { import = 'custom.plugins' },
 }, {
   ui = {
