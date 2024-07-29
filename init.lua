@@ -390,6 +390,10 @@ require('lazy').setup({
             require('telescope.themes').get_dropdown(),
           },
         },
+
+        path_display = {
+          shorten = 2,
+        },
       }
 
       -- Enable Telescope extensions if they are installed
