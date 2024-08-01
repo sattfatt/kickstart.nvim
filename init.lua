@@ -379,20 +379,19 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          file_ignore_patterns = {
+            'node_modules',
+            'vendor',
+          },
+          path_display = { 'smart' },
+          filesize_limit = 0.1, -- 1MB,
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
-        },
-
-        path_display = {
-          shorten = 2,
         },
       }
 
@@ -403,18 +402,20 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sb', builtin.git_branches, { desc = '[S]earch [B]ranches' })
-      vim.keymap.set('n', '<leader>sc', builtin.git_status, { desc = '[S]earch git [C]hanges' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader>sj', builtin.jumplist, { desc = '[S]earch [J]ump List' })
+      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[s]earch [H]elp' })
+      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[s]earch [K]eymaps' })
+      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[s]earch [F]iles' })
+      vim.keymap.set('n', '<leader>st', builtin.builtin, { desc = '[s]earch [T]elescope' })
+      vim.keymap.set('n', '<leader>ss', builtin.lsp_document_symbols, { desc = '[s]earch document [s]ymbols Telescope' })
+      vim.keymap.set('n', '<leader>sS', builtin.lsp_dynamic_workspace_symbols, { desc = '[s]earch [S]ymbols Telescope' })
+      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[s]earch current [W]ord' })
+      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[s]earch by [g]rep' })
+      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[s]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>sb', builtin.git_branches, { desc = '[s]earch [B]ranches' })
+      vim.keymap.set('n', '<leader>sc', builtin.git_status, { desc = '[s]earch git [C]hanges' })
+      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[s]earch [R]esume' })
+      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[s]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>sj', builtin.jumplist, { desc = '[s]earch [J]ump List' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       vim.keymap.set({ 'n', 'x' }, '<leader>rr', function()
@@ -592,6 +593,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       vim.filetype.add { extension = { templ = 'templ' } }
+      vim.filetype.add { extension = { brs = 'brs' } }
 
       local servers = {
         -- clangd = {},
@@ -599,23 +601,27 @@ require('lazy').setup({
 
         templ = {},
 
+        bright_script = {},
+
         html = {
           filetypes = { 'html', 'templ' },
         },
-
-        tailwindcss = {
-          settings = {
-            tailwindCSS = {
-              includeLanguages = {
-                templ = 'html',
-              },
-            },
-          },
-        },
+        --
+        -- tailwindcss = {
+        --   settings = {
+        --     tailwindCSS = {
+        --       includeLanguages = {
+        --         templ = 'html',
+        --       },
+        --     },
+        --   },
+        -- },
 
         jsonls = {},
 
-        tsserver = {},
+        -- tsserver = {
+        --   filetypes = {},
+        -- },
 
         -- pyright = {},
         -- rust_analyzer = {},
@@ -890,7 +896,14 @@ require('lazy').setup({
     end,
   },
 
-  { 'sindrets/diffview.nvim', opts = {} },
+  {
+    'sindrets/diffview.nvim',
+    opts = {},
+    config = function()
+      vim.keymap.set('n', '<leader>dh', '<cmd>:DiffviewFileHistory %<CR>', { desc = 'git [d]iff current file [h]istory' })
+      vim.keymap.set('n', '<leader>dc', '<cmd>:DiffviewClose<CR>', { desc = '[c]lose diffview' })
+    end,
+  },
 
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -964,14 +977,7 @@ require('lazy').setup({
       require('telescope').load_extension 'toggleterm'
     end,
   },
-  -- {
-  --   'kylechui/nvim-surround',
-  --   version = '*', -- Use for stability; omit to use `main` branch for the latest features
-  --   event = 'VeryLazy',
-  --   config = function()
-  --     require('nvim-surround').setup {}
-  --   end,
-  -- },
+
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -993,12 +999,6 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- {
-  --   'klen/nvim-test',
-  --   config = function()
-  --     require('nvim-test').setup()
-  --   end,
-  -- },
   {
     'ThePrimeagen/refactoring.nvim',
     dependencies = {
