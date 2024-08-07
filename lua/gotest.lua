@@ -29,7 +29,8 @@ M.RunNearestGoTest = function()
   local current_file_dir = vim.fn.expand '%:p:h'
   local nearest_test = get_nearest_go_test()
 
-  local cmd = string.format('cd %s && GOPATH=/Users/www/go-rockbot go test -v -run %s', current_file_dir, nearest_test)
+  local cmd =
+    string.format('set -a; source /Users/www/local.env; set +a; cd %s && GOPATH=/Users/www/go-rockbot go test -v -run %s', current_file_dir, nearest_test)
 
   vim.cmd 'belowright new'
   local job_id = vim.fn.termopen(cmd, {

@@ -220,6 +220,9 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 require 'diffviewer'
+require('workflows').setup {
+  keymap = '<leader>wf',
+}
 
 -- [[ Configure and install plugins ]]
 --
