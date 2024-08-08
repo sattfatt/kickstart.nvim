@@ -1,12 +1,27 @@
 local M = {}
 
 function M.run_dt_workflows()
-  vim.cmd 'enew'
-  local bufnr = vim.api.nvim_get_current_buf()
+  local float = require 'plenary.window.float'
+
+  local float_win = float.percentage_range_window(0.6, 0.6, {
+    winblend = 0,
+  }, {
+    topleft = '╭',
+    top = '─',
+    topright = '╮',
+    right = '│',
+    botright = '╯',
+    bot = '─',
+    botleft = '╰',
+    left = '│',
+  })
+
+  local win_id = float_win.win_id
+
   vim.fn.termopen('dt wf', {
     on_exit = function()
       vim.schedule(function()
-        vim.api.nvim_buf_delete(bufnr, { force = true })
+        vim.api.nvim_win_close(win_id, true)
       end)
     end,
   })
