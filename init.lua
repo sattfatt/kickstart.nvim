@@ -604,7 +604,9 @@ require('lazy').setup({
 
         templ = {},
 
-        bright_script = {},
+        bright_script = {
+          filetypes = { 'brs' },
+        },
 
         html = {
           filetypes = { 'html', 'templ' },
@@ -1052,6 +1054,21 @@ require('lazy').setup({
     },
   },
 })
+
+local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+parser_config.brightscript = {
+  install_info = {
+    url = '~/tree-sitter-brightscript/', -- local path or git repo
+    files = { 'src/parser.c' }, -- note that some parsers also require src/scanner.c or src/scanner.cc
+    -- -- optional entries:
+    -- branch = 'main', -- default branch in case of git repo if different from master
+    -- generate_requires_npm = true, -- if stand-alone parser without npm dependencies
+    -- requires_generate_from_grammar = true, -- if folder contains pre-generated src/parser.c
+  },
+  filetype = 'brs', -- if filetype does not match the parser name
+}
+
+vim.treesitter.language.register('brightscript', 'brs')
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
