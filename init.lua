@@ -622,6 +622,25 @@ require('lazy').setup({
 
         jsonls = {},
 
+        volar = {},
+
+        tsserver = {
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = '/Users/satyam/Library/pnpm/global/5/node_modules/@vue/typescript-plugin',
+                languages = { 'javascript', 'typescript', 'vue' },
+              },
+            },
+          },
+          filetypes = {
+            'javascript',
+            'typescript',
+            'vue',
+          },
+        },
+
         -- tsserver = {
         --   filetypes = {},
         -- },
@@ -635,10 +654,6 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         --
-
-        volar = {
-          filetypes = { 'vue', 'json', 'typescript', 'javascript' },
-        },
 
         eslint = {},
 
