@@ -643,6 +643,10 @@ require('lazy').setup({
           },
         },
 
+        pylsp = {},
+
+        yamlls = {},
+
         -- tsserver = {
         --   filetypes = {},
         -- },
