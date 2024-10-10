@@ -194,6 +194,9 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', ']q', ':cn<CR>', { desc = 'Go to next [Q]uickfix item' })
+vim.keymap.set('n', '[q', ':cp<CR>', { desc = 'Go to prev [Q]uickfix item' })
+
 vim.keymap.set('n', '<leader>te', ':lua require("gotest").RunNearestGoTest() <CR>', { noremap = true, silent = true, desc = 'Run nearest go test' })
 
 -- [[ Basic Autocommands ]]
@@ -626,7 +629,7 @@ require('lazy').setup({
 
         volar = {},
 
-        tsserver = {
+        ts_ls = {
           init_options = {
             plugins = {
               {
@@ -975,6 +978,9 @@ require('lazy').setup({
     keys = {
       { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
     },
+    config = function()
+      vim.g.lazygit_floating_window_scaling_factor = 0.95 -- scaling factor for floating window
+    end,
   },
   {
     'akinsho/toggleterm.nvim',
