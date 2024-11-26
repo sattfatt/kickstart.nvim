@@ -646,6 +646,14 @@ require('lazy').setup({
           },
         },
 
+        markdown_oxide = {
+          workspace = {
+            didChangeWatchedFiles = {
+              dynamicRegistration = true,
+            },
+          },
+        },
+
         -- tsserver = {
         --   filetypes = {},
         -- },
