@@ -24,35 +24,13 @@ return {
       vim.keymap.set('n', '<leader>dc', '<cmd>:DiffviewClose<CR>', { desc = '[c]lose diffview' })
     end,
   },
-  -- {
-  --   'kdheepak/lazygit.nvim',
-  --   cmd = {
-  --     'LazyGit',
-  --     'LazyGitConfig',
-  --     'LazyGitCurrentFile',
-  --     'LazyGitFilter',
-  --     'LazyGitFilterCurrentFile',
-  --   },
-  --   -- optional for floating window border decoration
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim',
-  --   },
-  --   -- setting the keybinding for LazyGit with 'keys' is recommended in
-  --   -- order to load the plugin when the command is run for the first time
-  --   keys = {
-  --     { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
-  --   },
-  --   config = function()
-  --     vim.g.lazygit_floating_window_scaling_factor = 0.95 -- scaling factor for floating window
-  --   end,
-  -- },
   {
     'voldikss/vim-floaterm',
     keys = {
       {
         '<Leader>lg',
         function()
-          vim.cmd 'FloatermNew --title=LazyGit --width=0.95 --height=0.95 lazygit'
+          vim.cmd 'FloatermNew --title=LazyGit --width=0.99 --height=0.99 lazygit'
         end,
         desc = 'LazyGit',
       },
