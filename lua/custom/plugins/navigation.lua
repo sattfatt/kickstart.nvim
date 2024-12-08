@@ -118,7 +118,10 @@ return {
   },
   {
     'stevearc/oil.nvim',
-    opts = {},
     dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+    config = function()
+      require('oil').setup()
+      vim.keymap.set('n', '<leader>fe', '<CMD>Oil<CR>', { desc = 'open [f]ile [e]xplorer' })
+    end,
   },
 }
