@@ -34,6 +34,20 @@ return {
         end,
         desc = 'LazyGit',
       },
+      {
+        '<Leader>ld',
+        function()
+          vim.cmd 'FloatermNew --title=LazyDocker --width=0.99 --height=0.99 lazydocker'
+        end,
+        desc = 'LazyDocker',
+      },
+      {
+        '<Leader>lh',
+        function()
+          vim.cmd 'FloatermNew --title=htop --width=0.99 --height=0.99 htop'
+        end,
+        desc = 'htop',
+      },
     },
   },
 }
