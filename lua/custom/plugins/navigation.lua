@@ -116,4 +116,9 @@ return {
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
+  {
+    'stevearc/oil.nvim',
+    opts = {},
+    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+  },
 }
