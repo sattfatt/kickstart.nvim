@@ -238,6 +238,13 @@ return {
         end,
         desc = 'Select Scratch Buffer',
       },
+      {
+        '<leader>gB',
+        function()
+          Snacks.gitbrowse()
+        end,
+        desc = 'Git Browse',
+      },
     },
   },
 }

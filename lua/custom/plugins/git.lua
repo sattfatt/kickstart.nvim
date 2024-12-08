@@ -48,6 +48,13 @@ return {
         end,
         desc = 'htop',
       },
+      {
+        '<Leader>lj',
+        function()
+          vim.cmd 'FloatermNew --title=jira --width=0.99 --height=0.99 jira issue list -a$(jira me) -Rx "done" -s "In Progress" -s "Selected For Development" -s "Engineering Backlog"'
+        end,
+        desc = 'htop',
+      },
     },
   },
 }
