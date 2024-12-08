@@ -36,7 +36,7 @@ function M.setup(opts)
   vim.api.nvim_set_keymap(
     'n',
     keymap,
-    '<cmd>lua require("workflows").run_dt_workflows()<CR>',
+    '<cmd>lua require("custom.internal.workflows").run_dt_workflows()<CR>',
     { desc = 'run [d]ev [t]ools workflows', noremap = true, silent = true }
   )
 end

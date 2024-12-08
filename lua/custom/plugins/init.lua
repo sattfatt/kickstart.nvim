@@ -10,5 +10,11 @@ return {
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     opts = {},
   },
-  { 'max397574/colortils.nvim' },
+  {
+    'max397574/colortils.nvim',
+    cmd = 'Colortils',
+    config = function()
+      require('colortils').setup()
+    end,
+  },
 }
