@@ -32,28 +32,35 @@ return {
         function()
           vim.cmd 'FloatermNew --title=LazyGit --width=0.99 --height=0.99 lazygit'
         end,
-        desc = 'LazyGit',
+        desc = 'Open lazy git',
       },
       {
         '<Leader>ld',
         function()
           vim.cmd 'FloatermNew --title=LazyDocker --width=0.99 --height=0.99 lazydocker'
         end,
-        desc = 'LazyDocker',
+        desc = 'Open lazy docker',
       },
       {
         '<Leader>lh',
         function()
           vim.cmd 'FloatermNew --title=htop --width=0.99 --height=0.99 htop'
         end,
-        desc = 'htop',
+        desc = 'show system resources in htop',
       },
       {
-        '<Leader>lj',
+        '<Leader>li',
         function()
           vim.cmd 'FloatermNew --title=jira --width=0.99 --height=0.99 jira issue list -a$(jira me) -Rx "done" -s "In Progress" -s "Selected For Development" -s "Engineering Backlog"'
         end,
-        desc = 'htop',
+        desc = 'Show my jira issues in backlog, selected for dev, and in progress',
+      },
+      {
+        '<Leader>le',
+        function()
+          vim.cmd 'FloatermNew --title=epics --width=0.99 --height=0.99 jira epic list --table -a satyam.patel@rockbot.com -s "In Progress" -s "Selected For Development" -s "Engineering Backlog"'
+        end,
+        desc = 'Show my jira epics in backlog, selected for dev, and in progress',
       },
     },
   },
