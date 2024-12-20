@@ -113,7 +113,12 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', ']q', ':cn<CR>', { desc = 'Go to next [Q]uickfix item' })
 vim.keymap.set('n', '[q', ':cp<CR>', { desc = 'Go to prev [Q]uickfix item' })
 
-vim.keymap.set('n', '<leader>te', ':lua require("gotest").RunNearestGoTest() <CR>', { noremap = true, silent = true, desc = 'Run nearest go test' })
+vim.keymap.set(
+  'n',
+  '<leader>te',
+  ':lua require("custom.internal.gotest").RunNearestGoTest() <CR>',
+  { noremap = true, silent = true, desc = 'Run nearest go test' }
+)
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
