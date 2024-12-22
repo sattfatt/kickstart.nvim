@@ -93,7 +93,7 @@ return {
           -- This may be unwanted, since they displace some of your code
           if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
             map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(0))
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
           end
         end,
@@ -110,7 +110,30 @@ return {
       vim.filetype.add { extension = { brs = 'brs' } }
 
       local servers = {
-        gopls = {},
+        gopls = {
+          on_attach = function()
+            -- automatically organize imports on save ...
+            vim.api.nvim_create_autocmd('BufWritePre', {
+              pattern = '*.go',
+              callback = function()
+                local params = vim.lsp.util.make_range_params()
+                params.context = { only = { 'source.organizeImports' } }
+
+                -- Synchronously organize imports
+                local result = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params, 3000)
+                for _, res in pairs(result or {}) do
+                  for _, r in pairs(res.result or {}) do
+                    if r.edit then
+                      vim.lsp.util.apply_workspace_edit(r.edit, 'utf-8')
+                    else
+                      vim.lsp.buf.execute_command(r.command)
+                    end
+                  end
+                end
+              end,
+            })
+          end,
+        },
 
         templ = {},
 
@@ -182,6 +205,7 @@ return {
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      ---@diagnostic disable-next-line: missing-fields
       require('mason-lspconfig').setup {
         -- ensure_installed = ensure_installed,
         -- automatic_installation = true,

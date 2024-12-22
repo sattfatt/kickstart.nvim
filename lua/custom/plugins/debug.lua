@@ -1,4 +1,37 @@
 return {
-  'mfussenegger/nvim-dap',
-  'leoluz/nvim-dap-go',
+  -- {
+  --   'mfussenegger/nvim-dap',
+  --   config = function()
+  --     local dap = require 'dap'
+  --     dap.adapters.go = {
+  --       type = 'executable',
+  --       command = 'node',
+  --       args = { os.getenv 'HOME' .. '/vscode-go/extension/dist/debugAdapter.js' },
+  --     }
+  --     dap.configurations.go = {
+  --       {
+  --         type = 'go',
+  --         name = 'Debug',
+  --         request = 'launch',
+  --         showLog = false,
+  --         program = '${file}',
+  --         dlvToolPath = vim.fn.exepath 'dlv', -- Adjust to where delve is installed
+  --       },
+  --     }
+  --
+  --     -- setup keymaps :help dap-mapping
+  --     vim.keymap.set('n', '<leader>dc', require('dap').continue, { desc = 'dap continue' })
+  --     vim.keymap.set('n', '<leader>db', require('dap').toggle_breakpoint, { desc = 'dap toggle breakpoint' })
+  --     vim.keymap.set('n', '<leader>do', require('dap').step_over, { desc = 'dap step over' })
+  --     vim.keymap.set('n', '<leader>di', require('dap').step_into, { desc = 'dap step into' })
+  --     vim.keymap.set({ 'n', 'v' }, '<leader>dh', require('dap.ui.widgets').hover, { desc = 'dap hover' })
+  --     vim.keymap.set({ 'n', 'v' }, '<leader>dp', require('dap.ui.widgets').preview, { desc = 'dap preview' })
+  --   end,
+  -- },
+  -- {
+  --   'leoluz/nvim-dap-go',
+  --   config = function()
+  --     require('dap-go').setup {}
+  --   end,
+  -- },
 }

@@ -32,6 +32,7 @@ return {
 
       -- brightscript treesitter perser
       local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+      ---@diagnostic disable-next-line: inject-field
       parser_config.brightscript = {
         install_info = {
           url = '~/tree-sitter-brightscript/', -- local path or git repo

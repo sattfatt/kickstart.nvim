@@ -113,12 +113,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', ']q', ':cn<CR>', { desc = 'Go to next [Q]uickfix item' })
 vim.keymap.set('n', '[q', ':cp<CR>', { desc = 'Go to prev [Q]uickfix item' })
 
-vim.keymap.set(
-  'n',
-  '<leader>te',
-  ':lua require("custom.internal.gotest").RunNearestGoTest() <CR>',
-  { noremap = true, silent = true, desc = 'Run nearest go test' }
-)
+vim.keymap.set('n', '<leader>te', require('custom.internal.gotest').RunNearestGoTestV4, { desc = 'Run nearest go test' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -176,7 +171,7 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',

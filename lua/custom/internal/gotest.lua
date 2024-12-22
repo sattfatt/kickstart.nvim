@@ -1,52 +1,119 @@
 local M = {}
 
-local function get_nearest_go_test()
-  -- Save the current cursor position
-  local save_cursor = vim.fn.getpos '.'
+-- Function to get the name of the nearest Go test function
+function M.get_nearest_test_name()
+  -- Ensure we're in a Go file
+  if vim.bo.filetype ~= 'go' then
+    vim.notify('Not in a Go file', vim.log.levels.ERROR)
+    return nil
+  end
 
-  -- Search for the next test function
-  if vim.fn.search([[\v^func\s+Test\w+\(]], 'nW') == 0 then
-    -- If not found forward, search backward
-    if vim.fn.search([[\v^func\s+Test\w+\(]], 'bnW') == 0 then
-      return ''
+  -- Get current buffer and cursor position
+  local bufnr = vim.api.nvim_get_current_buf()
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  local row = cursor_pos[1] - 1 -- Convert to 0-based index
+
+  -- Get Treesitter parser and tree
+  local parser = vim.treesitter.get_parser(bufnr, 'go')
+  local tree = parser:parse()[1]
+  local root = tree:root()
+
+  -- Query to find test function names
+  local query = vim.treesitter.query.parse(
+    'go',
+    [[
+        (function_declaration
+            name: (identifier) @func_name
+            (#match? @func_name "^Test")
+        )
+    ]]
+  )
+
+  -- Variables to track the nearest test
+  local nearest_test_name = nil
+  local min_distance = math.huge
+
+  -- Iterate through all matches
+  for id, node, metadata in query:iter_captures(root, bufnr, 0, -1) do
+    local start_row = node:range()
+    local test_name = vim.treesitter.get_node_text(node, bufnr)
+
+    -- Calculate distance to current cursor
+    local distance = math.abs(row - start_row)
+
+    -- Update if this is the nearest test so far
+    if distance < min_distance then
+      min_distance = distance
+      nearest_test_name = test_name
     end
   end
 
-  -- Get the line containing the test function
-  local test_line = vim.fn.getline '.'
-
-  -- Extract the test name using regex
-  local test_name = vim.fn.matchstr(test_line, [[\vTest\w+]])
-
-  -- Restore the cursor position
-  vim.fn.setpos('.', save_cursor)
-
-  return test_name
+  return nearest_test_name
 end
 
-M.RunNearestGoTest = function()
+M.RunNearestGoTestV4 = function()
   vim.cmd 'write'
   local current_file_dir = vim.fn.expand '%:p:h'
-  local nearest_test = get_nearest_go_test()
+  local nearest_test = M.get_nearest_test_name()
+  local temp_file = os.tmpname()
 
-  local cmd =
-    string.format('set -a; source /Users/www/local.env; set +a; cd %s && GOPATH=/Users/www/go-rockbot go test -v -run %s', current_file_dir, nearest_test)
+  --  'set -a; source /Users/www/local.env; set +a; cd %s && GOPATH=/Users/www/go-rockbot go test -v -run %s | grcat ~/.grc/conf.gotest > %s 2>&1',
 
+  local cmd = string.format(
+    'set -a; source /Users/www/local.env; set +a; cd %s && GOPATH=/Users/www/go-rockbot go test -v -run %s > %s 2>&1',
+    current_file_dir,
+    nearest_test,
+    temp_file
+  )
+
+  -- Create new buffer for output
   vim.cmd 'belowright new'
-  local job_id = vim.fn.termopen(cmd, {
-    on_exit = function(_, exit_code)
-      if exit_code ~= 0 then
-        print('Test command failed with exit code: ' .. exit_code)
-      end
-    end,
+  local buf = vim.api.nvim_get_current_buf()
+
+  -- Set up buffer options
+  vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
+  vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+  vim.api.nvim_buf_set_option(buf, 'swapfile', false)
+  vim.api.nvim_buf_set_name(buf, 'GoTest Output')
+
+  -- Set up the quit mapping
+  vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':q<CR>', {
+    noremap = true,
+    silent = true,
   })
 
-  if job_id == 0 then
-    print 'Failed to start the test command'
-    vim.cmd 'bdelete!'
-  else
-    vim.cmd 'startinsert'
-  end
+  -- Run the test in a job
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, exit_code)
+      -- Read the temp file
+      local lines = vim.fn.readfile(temp_file)
+
+      vim.list_extend(lines, {
+        '',
+        'Press q to exit',
+      })
+
+      -- Add the content to our buffer
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
+      -- replace ansi with hightlights
+
+      -- require('custom.internal.ansitohighlight').run()
+
+      -- Delete the temp file
+      os.remove(temp_file)
+
+      -- -- Set cursor at top
+      -- vim.api.nvim_win_set_cursor(0, { 1, 0 })
+
+      -- Make buffer read-only
+      vim.api.nvim_buf_set_option(buf, 'modified', false)
+      vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+      vim.api.nvim_buf_set_option(buf, 'filetype', 'injection')
+      -- vim.treesitter.language.add_to_buffer(buf, 'injection')
+      -- vim.treesitter.start(buf, 'injection')
+    end,
+  })
 end
 
 return M
