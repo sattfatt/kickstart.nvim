@@ -41,7 +41,7 @@ M.RunNearestGoTestV4 = function()
 
   -- Run the test in a job
   vim.fn.jobstart(cmd, {
-    on_exit = function(_, exit_code)
+    on_exit = function()
       -- Read the temp file
       local lines = vim.fn.readfile(temp_file)
 
