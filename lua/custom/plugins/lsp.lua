@@ -112,6 +112,8 @@ return {
       local servers = {
         gopls = {
           on_attach = function()
+            -- load sql too
+            vim.treesitter.language.register('go', 'sql')
             -- automatically organize imports on save ...
             vim.api.nvim_create_autocmd('BufWritePre', {
               pattern = '*.go',

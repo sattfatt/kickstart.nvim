@@ -54,7 +54,13 @@ end
 M.RunNearestGoTestV4 = function()
   vim.cmd 'write'
   local current_file_dir = vim.fn.expand '%:p:h'
-  local nearest_test = M.get_nearest_test_name()
+  local nearest_test = require('custom.internal.testfinder').get_current_test()
+  print('nearest:', nearest_test)
+  if not nearest_test then
+    print 'could not find test at cursor'
+    return
+  end
+
   local temp_file = os.tmpname()
 
   --  'set -a; source /Users/www/local.env; set +a; cd %s && GOPATH=/Users/www/go-rockbot go test -v -run %s | grcat ~/.grc/conf.gotest > %s 2>&1',
@@ -81,6 +87,8 @@ M.RunNearestGoTestV4 = function()
     noremap = true,
     silent = true,
   })
+
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { string.format('Running: %s ...', nearest_test) })
 
   -- Run the test in a job
   vim.fn.jobstart(cmd, {
