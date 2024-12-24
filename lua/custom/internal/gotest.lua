@@ -1,16 +1,42 @@
 local M = {}
 
+local uuid = function()
+  local template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+
+  return string.gsub(template, '[xy]', function(c)
+    local v = vim.fn.rand() % 16
+    if c == 'y' then
+      v = (v % 4) + 8
+    end
+    return string.format('%x', v)
+  end)
+end
+
+local state = {
+  current_win = 0,
+  current_buff = 0,
+}
+
+local closeExisting = function()
+  if state.current_win > 0 then
+    pcall(function()
+      vim.api.nvim_win_close(state.current_win, true)
+    end)
+  end
+end
+
 M.RunNearestGoTestV4 = function()
+  closeExisting()
+
   vim.cmd 'write'
   local current_file_dir = vim.fn.expand '%:p:h'
   local nearest_test = require('custom.internal.testfinder').get_test_name()
-  print('nearest:', nearest_test)
   if not nearest_test then
-    print 'could not find test at cursor'
+    vim.notify 'could not find test at cursor'
     return
   end
 
-  local temp_file = os.tmpname()
+  local temp_file = os.tmpname() .. uuid()
 
   --  'set -a; source /Users/www/local.env; set +a; cd %s && GOPATH=/Users/www/go-rockbot go test -v -run %s | grcat ~/.grc/conf.gotest > %s 2>&1',
 
@@ -23,21 +49,24 @@ M.RunNearestGoTestV4 = function()
 
   -- Create new buffer for output
   vim.cmd 'belowright new'
-  local buf = vim.api.nvim_get_current_buf()
+  state.current_buff = vim.api.nvim_get_current_buf()
+  state.current_win = vim.api.nvim_get_current_win()
 
   -- Set up buffer options
-  vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
-  vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
-  vim.api.nvim_buf_set_option(buf, 'swapfile', false)
-  vim.api.nvim_buf_set_name(buf, 'GoTest Output')
+  vim.api.nvim_buf_set_option(state.current_buff, 'buftype', 'nofile')
+  vim.api.nvim_buf_set_option(state.current_buff, 'bufhidden', 'wipe')
+  vim.api.nvim_buf_set_option(state.current_buff, 'swapfile', false)
+  vim.api.nvim_buf_set_name(state.current_buff, 'GoTest Output')
 
   -- Set up the quit mapping
-  vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':q<CR>', {
+  vim.api.nvim_buf_set_keymap(state.current_buff, 'n', 'q', ':q<CR>', {
     noremap = true,
     silent = true,
   })
 
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { string.format('Running: %s ...', nearest_test) })
+  local notif = string.format('Running: %s ...', nearest_test)
+  vim.api.nvim_buf_set_lines(state.current_buff, 0, -1, false, { notif })
+  vim.notify(notif)
 
   -- Run the test in a job
   vim.fn.jobstart(cmd, {
@@ -51,7 +80,7 @@ M.RunNearestGoTestV4 = function()
       })
 
       -- Add the content to our buffer
-      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+      vim.api.nvim_buf_set_lines(state.current_buff, 0, -1, false, lines)
 
       -- replace ansi with hightlights
 
@@ -64,9 +93,9 @@ M.RunNearestGoTestV4 = function()
       -- vim.api.nvim_win_set_cursor(0, { 1, 0 })
 
       -- Make buffer read-only
-      vim.api.nvim_buf_set_option(buf, 'modified', false)
-      vim.api.nvim_buf_set_option(buf, 'modifiable', false)
-      vim.api.nvim_buf_set_option(buf, 'filetype', 'injection')
+      vim.api.nvim_buf_set_option(state.current_buff, 'modified', false)
+      vim.api.nvim_buf_set_option(state.current_buff, 'modifiable', false)
+      vim.api.nvim_buf_set_option(state.current_buff, 'filetype', 'txt')
       -- vim.treesitter.language.add_to_buffer(buf, 'injection')
       -- vim.treesitter.start(buf, 'injection')
     end,

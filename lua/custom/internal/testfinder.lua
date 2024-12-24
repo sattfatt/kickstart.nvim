@@ -83,7 +83,6 @@ function M.get_current_test_name()
 
   -- Walk up the tree to find the function declaration
   while node do
-    print('node:', node)
     if node:type() == 'function_declaration' then
       -- Get function name node which is a child of function_declaration
       for child in node:iter_children() do
