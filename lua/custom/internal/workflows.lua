@@ -33,12 +33,7 @@ end
 function M.setup(opts)
   opts = opts or {}
   local keymap = opts.keymap or '<leader>dt'
-  vim.api.nvim_set_keymap(
-    'n',
-    keymap,
-    '<cmd>lua require("custom.internal.workflows").run_dt_workflows()<CR>',
-    { desc = 'run [d]ev [t]ools workflows', noremap = true, silent = true }
-  )
+  -- vim.keymap.set('n', keymap, M.run_dt_workflows, { desc = 'run [d]ev [t]ools workflows', noremap = true, silent = true })
 end
 
 return M
