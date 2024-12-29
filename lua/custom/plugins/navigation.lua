@@ -87,6 +87,7 @@ return {
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[s]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sj', builtin.jumplist, { desc = '[s]earch [J]ump List' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>wf', require('custom.internal.wfpicker').custom_picker, { desc = 'seach workflows and launch' })
 
       vim.keymap.set({ 'n', 'x' }, '<leader>rr', function()
         require('telescope').extensions.refactoring.refactors()
