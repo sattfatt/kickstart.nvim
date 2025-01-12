@@ -203,6 +203,8 @@ return {
             },
           },
         },
+
+        pylsp = {},
       }
 
       require('mason').setup()
