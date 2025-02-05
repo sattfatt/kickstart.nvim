@@ -1,1 +1,0 @@
-SELECT * from rb_ads_campaigns rac JOIN rb_ads_campaigns_zones racz ON rac.campaign_id = racz.campaign_id;

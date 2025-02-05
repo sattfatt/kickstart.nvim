@@ -8,6 +8,13 @@ return {
       {
         '<leader>f',
         function()
+          local filetype = vim.bo.filetype
+          if filetype == 'vue' then
+            vim.notify 'running eslint fixall'
+            vim.cmd 'EslintFixAll'
+            return
+          end
+
           require('conform').format { async = true, lsp_fallback = true }
         end,
         mode = '',
@@ -32,7 +39,7 @@ return {
           templ = { 'templ' },
           go = { 'gofmt' },
           sql = { 'sqlfmt' },
-          -- vue = { 'eslint' },
+          vue = {},
           -- javascript = { 'prettier' },
           -- typescript = { 'prettier' },
           -- Conform can also run multiple formatters sequentially
