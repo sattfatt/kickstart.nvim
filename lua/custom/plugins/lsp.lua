@@ -43,6 +43,9 @@ return {
           -- Find references for the word under your cursor.
           map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
 
+          map('<leader>co', require('telescope.builtin').lsp_outgoing_calls, '[C]alls [O]utgoing')
+          map('<leader>ci', require('telescope.builtin').lsp_incoming_calls, '[C]alls [I]ncoming')
+
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
           map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
@@ -52,13 +55,13 @@ return {
           --  the definition of its *type*, not where it was *defined*.
           map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
 
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          -- -- Fuzzy find all the symbols in your current document.
+          -- --  Symbols are things like variables, functions, types, etc.
+          -- map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          map('<leader>ss', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
@@ -121,6 +124,7 @@ return {
           on_attach = function()
             -- load sql too
             vim.treesitter.language.register('go', 'sql')
+
             -- automatically organize imports on save ...
             -- vim.api.nvim_create_autocmd('BufWritePre', {
             --   pattern = '*.go',

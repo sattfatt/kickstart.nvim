@@ -22,6 +22,7 @@ return {
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      'j-hui/fidget.nvim',
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -69,21 +70,20 @@ return {
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
       pcall(require('telescope').load_extension 'refactoring')
+      pcall(require('telescope').load_extension, 'fidget')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[s]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[s]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[s]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sm', require('telescope').extensions.fidget.fidget, { desc = '[s]earch [m]essages' })
       vim.keymap.set('n', '<leader>st', builtin.builtin, { desc = '[s]earch [T]elescope' })
-      vim.keymap.set('n', '<leader>ss', builtin.lsp_document_symbols, { desc = '[s]earch document [s]ymbols Telescope' })
-      vim.keymap.set('n', '<leader>sS', builtin.lsp_dynamic_workspace_symbols, { desc = '[s]earch [S]ymbols Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[s]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[s]earch by [g]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[s]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sb', builtin.git_branches, { desc = '[s]earch [B]ranches' })
       vim.keymap.set('n', '<leader>sc', builtin.git_status, { desc = '[s]earch git [C]hanges' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[s]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[s]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sj', builtin.jumplist, { desc = '[s]earch [J]ump List' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
