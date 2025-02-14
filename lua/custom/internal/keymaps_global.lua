@@ -34,7 +34,8 @@ M.setup = function()
 
   vim.keymap.set('n', ']q', ':cn<CR>', { desc = 'Go to next [Q]uickfix item' })
   vim.keymap.set('n', '[q', ':cp<CR>', { desc = 'Go to prev [Q]uickfix item' })
-  vim.keymap.set('n', '<leader>tc', ':tabc<CR>', { desc = 'close tab' })
+  vim.keymap.set('n', '<leader>tc', ':tabc<CR>', { desc = '[t]ab [c]lose' })
+  vim.keymap.set('n', '<leader>ts', ':tab split<CR>', { desc = '[t]ab split' })
 end
 
 return M
