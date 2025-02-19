@@ -202,6 +202,8 @@ return {
         },
 
         pylsp = {},
+
+        bashls = {},
       }
 
       require('mason').setup()
