@@ -58,7 +58,12 @@ return {
           path_display = { 'smart' },
           filesize_limit = 0.1, -- 1MB,
         },
-        -- pickers = {}
+        -- pickers = {
+        --   lsp_dynamic_workspace_symbols = {
+        --     sorter = require('telescope.sorters').get_fuzzy_file(),
+        --     additional_filtering = true,
+        --   },
+        -- },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
