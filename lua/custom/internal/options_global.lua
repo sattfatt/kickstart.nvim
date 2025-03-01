@@ -15,7 +15,7 @@ M.setup = function()
   -- Don't show the mode, since it's already in the status line
   vim.opt.showmode = false
 
-  vim.cmd 'set noexpandtab sts=4 sw=4'
+  -- vim.cmd 'set noexpandtab sts=4 sw=4'
 
   -- Sync clipboard between OS and Neovim.
   --  Remove this option if you want your OS clipboard to remain independent.

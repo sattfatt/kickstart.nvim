@@ -85,6 +85,7 @@ return {
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
+
           if client and client.server_capabilities.documentHighlightProvider then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -106,6 +107,29 @@ return {
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
           end
+
+          -- handle bashls + dev-tools-ls worspace conflict
+          local bufnr = event.buf
+          local allClients = vim.lsp.get_clients { bufnr = bufnr }
+          -- Check if multiple clients support workspace symbols
+          local workspace_symbol_providers = {}
+          for _, cl in ipairs(allClients) do
+            if cl.server_capabilities.workspaceSymbolProvider then
+              table.insert(workspace_symbol_providers, cl)
+            end
+          end
+          if #workspace_symbol_providers > 1 then
+            -- Keep workspace symbols only for your preferred server
+            -- In this case, we'll keep it for your custom server and disable for bash-language-server
+            for _, client in ipairs(workspace_symbol_providers) do
+              if client.name == 'bashls' then -- Change to match the name of the LSP you want to disable
+                client.server_capabilities.workspaceSymbolProvider = false
+                print('Disabled workspace symbols for ' .. client.name .. ' (multiple providers detected)')
+              end
+            end
+          end
+
+          --
         end,
       })
 
@@ -230,6 +254,8 @@ return {
           end,
         },
       }
+
+      require('custom.internal.lsp_custom').setup(capabilities)
     end,
   },
 }
