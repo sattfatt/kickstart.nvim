@@ -8,14 +8,18 @@ return {
       {
         '<leader>f',
         function()
-          local filetype = vim.bo.filetype
-          if filetype == 'vue' then
-            vim.notify 'running eslint fixall'
-            vim.cmd 'EslintFixAll'
-            return
-          end
-
+          -- format with formatter
           require('conform').format { async = true, lsp_fallback = true }
+
+          -- format with eslint
+          pcall(function()
+            local filetype = vim.bo.filetype
+            if filetype == 'vue' or filetype == 'javascript' or filetype == 'typescript' then
+              vim.notify 'running eslint fixall'
+              vim.cmd 'EslintFixAll'
+              return
+            end
+          end)
         end,
         mode = '',
         desc = '[F]ormat buffer',
@@ -28,7 +32,7 @@ return {
           -- Disable "format_on_save lsp_fallback" for languages that don't
           -- have a well standardized coding style. You can add additional
           -- languages here or re-enable it for the disabled ones.
-          local disable_filetypes = { c = true, cpp = true, javascript = true, typescript = true, vue = true }
+          local disable_filetypes = { c = true, cpp = true }
           return {
             timeout_ms = 500,
             lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
@@ -39,9 +43,9 @@ return {
           templ = { 'templ' },
           go = { 'gofmt' },
           sql = { 'sqlfmt' },
-          vue = {},
-          -- javascript = { 'prettier' },
-          -- typescript = { 'prettier' },
+          vue = { 'prettier' },
+          javascript = { 'prettier' },
+          typescript = { 'prettierd', 'prettier' },
           -- Conform can also run multiple formatters sequentially
           -- python = { "isort", "black" },
           --

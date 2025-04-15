@@ -185,6 +185,11 @@ return {
 
         bright_script = {
           filetypes = { 'brs' },
+          settings = {
+            brightscript = {
+              configFile = vim.fn.getcwd() .. '/bsconfig.json',
+            },
+          },
         },
 
         html = {
@@ -194,6 +199,12 @@ return {
         jsonls = {},
 
         volar = {},
+
+        tailwindcss = {
+          includeLanguages = {
+            templ = 'html',
+          },
+        },
 
         ts_ls = {
           init_options = {
