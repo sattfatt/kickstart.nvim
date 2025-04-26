@@ -75,6 +75,7 @@ return {
               table.insert(workspace_symbol_providers, cl)
             end
           end
+
           if #workspace_symbol_providers > 1 then
             -- Keep workspace symbols only for your preferred server
             -- In this case, we'll keep it for your custom server and disable for bash-language-server
@@ -147,8 +148,8 @@ return {
       --  By default, Neovim doesn't support everything that is in the LSP specification.
       --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
+      -- local capabilities = vim.lsp.protocol.make_client_capabilities()
+      local capabilities = require('blink.cmp').get_lsp_capabilities(nil, true)
 
       vim.filetype.add { extension = { templ = 'templ' } }
       vim.filetype.add { extension = { brs = 'brs' } }
