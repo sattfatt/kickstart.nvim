@@ -272,16 +272,18 @@ return {
         'stylua', -- Used to format Lua code
       })
 
+      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
       require('mason-lspconfig').setup {
+        ensure_installed = {},
         automatic_enable = vim.tbl_keys(servers or {}),
       }
 
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
       for server_name, config in pairs(servers) do
-        -- vim.lsp.config(server_name, config) (migrate to this once all lsps are updated)
+        -- vim.lsp.config(server_name, config) -- (migrate to this once all lsps are updated)
         require('lspconfig')[server_name].setup(config)
       end
+
       require('custom.internal.lsp_custom').setup(capabilities)
     end,
   },
