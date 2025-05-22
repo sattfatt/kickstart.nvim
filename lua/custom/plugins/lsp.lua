@@ -255,7 +255,7 @@ return {
           },
         },
 
-        volar = {},
+        vue_ls = {},
 
         cssls = {},
 
