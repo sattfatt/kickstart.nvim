@@ -207,6 +207,8 @@ return {
       vim.filetype.add { extension = { templ = 'templ' } }
       vim.filetype.add { extension = { brs = 'brs' } }
 
+      local base_eslint_on_attach = vim.lsp.config.eslint.on_attach
+
       local servers = {
         gopls = {
           on_attach = function()
@@ -267,7 +269,19 @@ return {
           },
         },
 
-        eslint = {},
+        eslint = {
+          on_attach = function(client, bufnr)
+            if not base_eslint_on_attach then
+              return
+            end
+
+            base_eslint_on_attach(client, bufnr)
+            vim.api.nvim_create_autocmd('BufWritePre', {
+              buffer = bufnr,
+              command = 'LspEslintFixAll',
+            })
+          end,
+        },
 
         lua_ls = {
           on_init = function(client)

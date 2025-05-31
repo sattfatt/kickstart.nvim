@@ -16,7 +16,7 @@ return {
             local filetype = vim.bo.filetype
             if filetype == 'vue' or filetype == 'javascript' or filetype == 'typescript' then
               vim.notify 'running eslint fixall'
-              vim.cmd 'EslintFixAll'
+              vim.cmd 'LspEslintFixAll'
               return
             end
           end)
