@@ -14,6 +14,7 @@ return {
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      fold = { enable = true },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -39,7 +40,7 @@ return {
           files = { 'src/parser.c' }, -- note that some parsers also require src/scanner.c or src/scanner.cc
           -- -- optional entries:
           -- branch = 'main', -- default branch in case of git repo if different from master
-          -- generate_requires_npm = true, -- if stand-alone parser without npm dependencies
+          -- generate_requzres_npm = true, -- if stand-alone parser without npm dependencies
           -- requires_generate_from_grammar = true, -- if folder contains pre-generated src/parser.c
         },
         filetype = 'brs', -- if filetype does not match the parser name

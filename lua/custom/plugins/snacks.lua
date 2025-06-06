@@ -7,9 +7,18 @@ return {
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
       },
-      notifier = {},
-      input = {},
-      statuscolumn = {},
+      notifier = { enabled = true },
+      input = { enabled = true },
+      statuscolumn = { enabled = true },
+      dim = {
+        enabled = true,
+        config = function()
+          DIM_ENABLE = false
+        end,
+      },
+      words = { enabled = true },
+      indent = { enabled = true },
+      toggle = {},
     },
     keys = {
       {
@@ -39,6 +48,27 @@ return {
           Snacks.notifier.show_history()
         end,
         desc = 'Show [h]istory',
+      },
+      {
+        '<lader>dd',
+        function()
+          Snacks.toggle.dim()
+        end,
+        desc = '[d]im some stuff',
+      },
+      {
+        '<leader>ww',
+        function()
+          Snacks.words.jump(1, true)
+        end,
+        desc = 'show [w]ords',
+      },
+      {
+        '<leader>xd',
+        function()
+          Snacks.toggle.diagnostics()
+        end,
+        desc = '[t]oggle [d]iagnostics',
       },
     },
   },

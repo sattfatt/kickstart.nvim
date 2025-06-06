@@ -67,6 +67,13 @@ M.setup = function()
 
   -- Set highlight on search, but clear on pressing <Esc> in normal mode
   vim.opt.hlsearch = true
+
+  -- Set the foldmethod to use the new Tree-sitter expression
+  vim.opt.foldmethod = 'expr'
+  vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+
+  -- Keep folds open by default
+  vim.opt.foldlevelstart = 99
 end
 
 return M
