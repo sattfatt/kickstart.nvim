@@ -352,6 +352,8 @@ return {
         pylsp = {},
 
         bashls = {},
+
+        lemminx = {},
       }
 
       require('mason').setup()
