@@ -224,6 +224,14 @@ return {
 
       local base_eslint_on_attach = vim.lsp.config.eslint.on_attach
 
+      local vue_language_server_path = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server'
+      local vue_plugin = {
+        name = '@vue/typescript-plugin',
+        location = vue_language_server_path,
+        languages = { 'vue' },
+        configNamespace = 'typescript',
+      }
+
       local servers = {
         gopls = {
           on_attach = function()
@@ -255,24 +263,22 @@ return {
           },
         },
 
-        ts_ls = {
-          init_options = {
-            plugins = {
-              {
-                name = '@vue/typescript-plugin',
-                location = '/Users/satyam/Library/pnpm/global/5/node_modules/@vue/typescript-plugin',
-                languages = { 'javascript', 'typescript', 'vue' },
+        vue_ls = {},
+
+        ts_ls = {},
+
+        vtsls = {
+          settings = {
+            vtsls = {
+              tsserver = {
+                globalPlugins = {
+                  vue_plugin,
+                },
               },
             },
           },
-          filetypes = {
-            'javascript',
-            'typescript',
-            'vue',
-          },
+          filetypes = { 'typescript', 'javascript', 'vue' },
         },
-
-        vue_ls = {},
 
         cssls = {},
 
@@ -367,11 +373,12 @@ return {
 
       require('mason-lspconfig').setup {
         ensure_installed = {},
-        automatic_enable = vim.tbl_keys(servers or {}),
+        automatic_enable = false,
       }
 
       for server_name, config in pairs(servers) do
         vim.lsp.config(server_name, config) -- (migrate to this once all lsps are updated)
+        vim.lsp.enable(server_name)
       end
 
       require('custom.internal.lsp_custom').setup(capabilities)
