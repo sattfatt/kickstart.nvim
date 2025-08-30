@@ -265,7 +265,7 @@ return {
 
         vue_ls = {},
 
-        ts_ls = {},
+        -- ts_ls = {},
 
         vtsls = {
           settings = {
@@ -277,7 +277,7 @@ return {
               },
             },
           },
-          filetypes = { 'typescript', 'javascript', 'vue' },
+          filetypes = { 'vue', 'typescript', 'javascript' },
         },
 
         cssls = {},
@@ -360,6 +360,8 @@ return {
         bashls = {},
 
         lemminx = {},
+
+        dockerls = {},
       }
 
       require('mason').setup()

@@ -21,7 +21,7 @@ return {
       vim.g.db_ui_save_location = vim.fn.stdpath 'config' .. '/db_ui'
 
       vim.g.dbs = {
-        dev = 'mysql:///dev_latest?login-path=dev',
+        dev = 'mysql://satyam.patel@127.0.0.1:1234/dev_latest',
         replica = 'mysql:///rockbot_prod?login-path=replica',
       }
 
