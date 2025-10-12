@@ -5,7 +5,13 @@ return {
       'nvim-neotest/nvim-nio',
       'nvim-lua/plenary.nvim',
       'antoinemadec/FixCursorHold.nvim',
-      'nvim-treesitter/nvim-treesitter',
+      {
+        'nvim-treesitter/nvim-treesitter', -- Optional, but recommended
+        branch = 'main',
+        build = function()
+          vim.cmd ':TSUpdate go'
+        end,
+      },
       {
         'fredrikaverpil/neotest-golang',
         version = '*', -- Optional, but recommended; track releases
@@ -44,7 +50,7 @@ return {
 
       local config = {
         runner = 'gotestsum', -- Optional, but recommended
-        env = load_env '/Users/www/local.env',
+        -- env = load_env '/Users/www/local.env',
       }
 
       require('neotest').setup {
