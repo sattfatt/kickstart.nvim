@@ -7,6 +7,9 @@ return {
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
       },
+      image = {
+        backend = 'ghostty',
+      },
       notifier = { enabled = true },
       input = { enabled = true },
       statuscolumn = { enabled = true },
