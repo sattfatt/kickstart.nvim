@@ -25,6 +25,19 @@ local closeExisting = function()
   end
 end
 
+M.GetGoTestCommand = function()
+  local nearest_test = require('custom.internal.testfinder').get_test_name()
+  local cmd = string.format('go test -v -run %s', nearest_test)
+  return cmd
+end
+
+M.CopyTestCommandToClipboard = function()
+  local cmd = M.GetGoTestCommand()
+  vim.fn.setreg('+', cmd)
+  local log = string.format('test command saved to clipboard:\n%s', cmd)
+  vim.notify(log, vim.log.levels.INFO)
+end
+
 M.RunNearestGoTestV4 = function()
   closeExisting()
 

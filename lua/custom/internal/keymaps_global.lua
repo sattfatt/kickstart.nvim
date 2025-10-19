@@ -40,6 +40,8 @@ M.setup = function()
   vim.keymap.set('n', '[q', ':cp<CR>', { desc = 'Go to prev [Q]uickfix item' })
   vim.keymap.set('n', '<leader>tc', ':tabc<CR>', { desc = '[t]ab [c]lose' })
   vim.keymap.set('n', '<leader>ts', ':tab split<CR>', { desc = '[t]ab split' })
+
+  vim.keymap.set('n', '<leader>tc', require('custom.internal.gotest').CopyTestCommandToClipboard, { desc = 'copy go test command to clipboard' })
 end
 
 return M
