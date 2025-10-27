@@ -362,6 +362,8 @@ return {
         lemminx = {},
 
         dockerls = {},
+
+        taplo = {},
       }
 
       require('mason').setup()
