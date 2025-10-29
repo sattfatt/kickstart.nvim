@@ -18,28 +18,39 @@ M.pick_tasks = function(opts)
       prompt_title = 'Mise Tasks',
       finder = require('telescope.finders').new_table {
         results = tasks,
+
         entry_maker = function(task)
-          local name_str = task.name
-          local separator_str = ' :: '
-          local description_str = task.description or ''
-          local command = task.run or ''
-          local function get_cmd_string(cmd)
-            if type(cmd) == 'table' then
-              return table.concat(cmd, ' ') -- Join array with spaces
-            elseif type(cmd) == 'string' then
-              return cmd
-            end
-            return 'N/A' -- Default if nil or other type
-          end
-
-          local display_str = name_str .. separator_str .. get_cmd_string(command)
-
-          return {
+          local t = task
+          return require('telescope.make_entry').set_default_entry_mt({
             value = task,
-            display = display_str,
-            ordinal = task.name,
-          }
+            ordinal = t.name,
+            display = t.name,
+            filename = t.description or '',
+          }, opts)
         end,
+
+        --   entry_maker = function(task)
+        --     local name_str = task.name
+        --     local separator_str = ' :: '
+        --     local description_str = task.description or ''
+        --     local command = task.run or ''
+        --     local function get_cmd_string(cmd)
+        --       if type(cmd) == 'table' then
+        --         return table.concat(cmd, ' ') -- Join array with spaces
+        --       elseif type(cmd) == 'string' then
+        --         return cmd
+        --       end
+        --       return 'N/A' -- Default if nil or other type
+        --     end
+        --
+        --     local display_str = name_str .. separator_str .. get_cmd_string(command)
+        --
+        --     return {
+        --       value = task,
+        --       display = display_str,
+        --       ordinal = task.name,
+        --     }
+        --   end,
       },
       sorter = require('telescope.config').values.generic_sorter(opts),
       previewer = require('telescope.previewers').new_buffer_previewer {
