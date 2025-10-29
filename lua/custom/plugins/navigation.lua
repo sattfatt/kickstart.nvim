@@ -82,7 +82,7 @@ return {
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[s]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[s]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[s]earch [F]iles' })
-      vim.keymap.set('n', '<leader>sm', require('telescope').extensions.fidget.fidget, { desc = '[s]earch [m]essages' })
+      -- vim.keymap.set('n', '<leader>sm', require('telescope').extensions.fidget.fidget, { desc = '[s]earch [m]essages' })
       vim.keymap.set('n', '<leader>st', builtin.builtin, { desc = '[s]earch [T]elescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[s]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[s]earch by [g]rep' })
@@ -92,7 +92,7 @@ return {
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[s]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sj', builtin.jumplist, { desc = '[s]earch [J]ump List' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>wf', require('custom.internal.wfpicker').custom_picker, { desc = 'seach workflows and launch' })
+      vim.keymap.set('n', '<leader>sm', require('custom.internal.misepicker').pick_tasks, { desc = 'seach workflows and launch' })
 
       vim.keymap.set({ 'n', 'x' }, '<leader>rr', function()
         require('telescope').extensions.refactoring.refactors()
