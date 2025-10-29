@@ -1,4 +1,24 @@
 local M = {}
+
+local function setup_highlights()
+  vim.notify 'loading Mise highlights...'
+  vim.api.nvim_set_hl(0, 'MiseTaskName', { link = 'Constant' })
+  vim.api.nvim_set_hl(0, 'MiseTaskLocation', { link = 'Directory' })
+  vim.api.nvim_set_hl(0, 'MiseTaskSeparator', { link = 'Comment' })
+  vim.api.nvim_set_hl(0, 'MiseTaskDescription', { link = 'String' })
+end
+
+vim.api.nvim_create_augroup('MisePickerHighlights', { clear = true })
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = 'MisePickerHighlights',
+  pattern = '*',
+  callback = function()
+    setup_highlights()
+  end,
+})
+
+setup_highlights()
+
 M.running_tasks = {}
 
 M.pick_tasks = function(opts)
@@ -20,13 +40,54 @@ M.pick_tasks = function(opts)
         results = tasks,
 
         entry_maker = function(task)
-          local t = task
-          return require('telescope.make_entry').set_default_entry_mt({
+          local hl_name = 'MiseTaskName'
+          local hl_location = 'MiseTaskLocation'
+          local hl_separator = 'MiseTaskSeparator'
+          local hl_description = 'MiseTaskDescription'
+
+          -- 2. Build display string parts
+          local name_str = task.name
+          local sep_1_str = ' |'
+          local location_str = task.dir and task.dir ~= '' and (' [' .. task.dir .. ']') or ''
+          local separator_str = ' | '
+          local description_str = task.description or ''
+
+          local display_str = name_str .. sep_1_str .. location_str .. separator_str .. description_str
+
+          -- 3. Calculate byte positions
+          -- This is a more direct way to calculate byte offsets
+          local highlights = {}
+          local len_name = #name_str
+          local len_loc = #location_str
+          local len_1_sep = #sep_1_str
+          local len_sep = #separator_str
+          local len_desc = #description_str
+
+          if len_name > 0 then
+            table.insert(highlights, { { 0, len_name }, hl_name })
+          end
+          if len_sep > 0 then
+            table.insert(highlights, { { len_name, len_name + len_1_sep }, hl_separator })
+          end
+          if len_loc > 0 then
+            table.insert(highlights, { { len_name + len_1_sep, len_name + len_1_sep + len_loc }, hl_location })
+          end
+          if len_sep > 0 then
+            table.insert(highlights, { { len_name + len_1_sep + len_loc, len_name + len_1_sep + len_loc + len_sep }, hl_separator })
+          end
+          if len_desc > 0 then
+            table.insert(highlights, { { len_name + len_1_sep + len_loc + len_sep, len_name + len_1_sep + len_loc + len_sep + len_desc }, hl_description })
+          end
+
+          local ent = require('telescope.make_entry').set_default_entry_mt {
             value = task,
-            ordinal = t.name,
-            display = t.name,
-            filename = t.description or '',
-          }, opts)
+            ordinal = display_str,
+            display = function()
+              return display_str, highlights
+            end,
+          }
+
+          return ent
         end,
 
         --   entry_maker = function(task)
@@ -66,23 +127,36 @@ M.pick_tasks = function(opts)
             return 'N/A' -- Default if nil or other type
           end
 
-          local function code(input)
-            return '`' .. input .. '`'
+          local function formatted(input)
+            return '' .. input .. ''
           end
 
           local lines = {
             '# Task Details',
             '',
-            'Name: ' .. code(task.name),
-            'Source: ' .. code(task.source or 'mise.toml'),
-            'Directory: ' .. code(task.dir or vim.fn.getcwd()),
+
+            '## Name',
+            formatted(task.name),
+
+            '## Source: ',
+            formatted(task.source or 'mise.toml'),
+
+            '## Directory: ',
+            formatted(task.dir or vim.fn.getcwd()),
             '',
+
             '# Description',
             task.description or 'No description',
             '',
+
             '# Command',
-            get_cmd_string(),
+            '``` bash',
             '',
+            get_cmd_string(cmd),
+            '',
+            '```',
+            '',
+
             '# Aliases',
           }
 
@@ -100,6 +174,11 @@ M.pick_tasks = function(opts)
 
           vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
           vim.api.nvim_set_option_value('filetype', 'markdown', { buf = self.state.bufnr })
+          vim.api.nvim_set_option_value('wrap', true, { win = self.state.winid })
+          vim.api.nvim_set_option_value('linebreak', true, { win = self.state.winid })
+          vim.api.nvim_buf_call(self.state.bufnr, function()
+            vim.api.nvim_command 'RenderMarkdown'
+          end)
         end,
       },
       attach_mappings = function(prompt_bufnr, map)
