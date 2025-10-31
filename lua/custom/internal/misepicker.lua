@@ -86,7 +86,7 @@ M.pick_tasks = function(opts)
 
           local ent = require('telescope.make_entry').set_default_entry_mt {
             value = task,
-            ordinal = display_str,
+            ordinal = task.name,
             display = function()
               return display_str, highlights
             end,
@@ -189,6 +189,7 @@ M.pick_tasks = function(opts)
           local term = Terminal:new {
             cmd = cmd_to_run,
             cwd = run_dir,
+            close_on_exit = false,
             on_exit = function(t, job_id, exit_code)
               -- This callback fires when the *process* (e.g., Go server)
               -- actually exits or is killed.
