@@ -48,7 +48,12 @@ M.pick_tasks = function(opts)
           -- 2. Build display string parts
           local name_str = task.name
           local sep_1_str = ' |'
-          local location_str = task.dir and task.dir ~= '' and (' [' .. task.dir .. ']') or ''
+          local location_str = ''
+          if task.dir and task.dir == vim.NIL then
+            location_str = string.format(' [%s]', 'N/A')
+          elseif task.dir and task.dir ~= '' then
+            location_str = string.format(' [%s]', task.dir)
+          end
           local separator_str = ' | '
           local description_str = task.description or ''
 
@@ -89,29 +94,6 @@ M.pick_tasks = function(opts)
 
           return ent
         end,
-
-        --   entry_maker = function(task)
-        --     local name_str = task.name
-        --     local separator_str = ' :: '
-        --     local description_str = task.description or ''
-        --     local command = task.run or ''
-        --     local function get_cmd_string(cmd)
-        --       if type(cmd) == 'table' then
-        --         return table.concat(cmd, ' ') -- Join array with spaces
-        --       elseif type(cmd) == 'string' then
-        --         return cmd
-        --       end
-        --       return 'N/A' -- Default if nil or other type
-        --     end
-        --
-        --     local display_str = name_str .. separator_str .. get_cmd_string(command)
-        --
-        --     return {
-        --       value = task,
-        --       display = display_str,
-        --       ordinal = task.name,
-        --     }
-        --   end,
       },
       sorter = require('telescope.config').values.generic_sorter(opts),
       previewer = require('telescope.previewers').new_buffer_previewer {
@@ -128,49 +110,37 @@ M.pick_tasks = function(opts)
           end
 
           local function formatted(input)
-            return '' .. input .. ''
+            if input == vim.NIL then
+              return ''
+            end
+            return input
           end
 
-          local lines = {
-            '# Task Details',
-            '',
+          local template = [[ # Task Details
 
-            '## Name',
-            formatted(task.name),
+## Name
+%s
 
-            '## Source: ',
-            formatted(task.source or 'mise.toml'),
+## Source
+%s
 
-            '## Directory: ',
-            formatted(task.dir or vim.fn.getcwd()),
-            '',
+## Directory
+%s
 
-            '# Description',
-            task.description or 'No description',
-            '',
+# Description
+%s
 
-            '# Command',
-            '``` bash',
-            '',
-            get_cmd_string(cmd),
-            '',
-            '```',
-            '',
+# Command
+``` bash
+%s
 
-            '# Aliases',
-          }
+```
+            ]]
 
-          if task.alias and type(task.alias) == 'table' then
-            table.insert(lines, table.concat(task.alias, ', '))
-          else
-            table.insert(lines, 'None')
-          end
+          local hydrated =
+            string.format(template, formatted(task.name), formatted(task.source), formatted(task.dir), formatted(task.description), get_cmd_string(cmd))
 
-          if task.depends and type(task.depends) == 'table' then
-            table.insert(lines, '')
-            table.insert(lines, '# Dependencies')
-            table.insert(lines, table.concat(task.depends, ', '))
-          end
+          local lines = vim.split(hydrated, '\n')
 
           vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
           vim.api.nvim_set_option_value('filetype', 'markdown', { buf = self.state.bufnr })

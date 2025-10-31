@@ -363,7 +363,9 @@ return {
 
         dockerls = {},
 
-        tofu_ls = {},
+        tofu_ls = {
+          filetypes = { 'terraform', 'tf' },
+        },
       }
 
       require('mason').setup()
