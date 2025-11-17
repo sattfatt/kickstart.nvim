@@ -23,6 +23,7 @@ return {
       vim.g.dbs = {
         dev = 'mysql://satyam.patel@127.0.0.1:1234/dev_latest',
         replica = 'mysql:///rockbot_prod?login-path=replica',
+        localhost = 'mysql://root@localhost/mysqltestdb',
       }
 
       vim.keymap.set('n', '<leader>db', ':tabnew<CR>:DBUI<CR>', { noremap = true, silent = true, desc = 'Open DB in another tab' })

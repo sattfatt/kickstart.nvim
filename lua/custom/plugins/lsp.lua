@@ -390,4 +390,17 @@ return {
       require('custom.internal.lsp_custom').setup(capabilities)
     end,
   },
+
+  {
+    'jmbuhr/otter.nvim',
+    config = function()
+      vim.api.nvim_create_autocmd({ 'FileType' }, {
+        pattern = { 'toml' },
+        group = vim.api.nvim_create_augroup('EmbedToml', {}),
+        callback = function()
+          require('otter').activate()
+        end,
+      })
+    end,
+  },
 }

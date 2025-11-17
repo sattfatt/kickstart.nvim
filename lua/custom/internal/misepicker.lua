@@ -190,6 +190,11 @@ M.pick_tasks = function(opts)
             cmd = cmd_to_run,
             cwd = run_dir,
             close_on_exit = false,
+            on_open = function(t)
+              vim.schedule(function()
+                vim.cmd 'startinsert'
+              end)
+            end,
             on_exit = function(t, job_id, exit_code)
               -- This callback fires when the *process* (e.g., Go server)
               -- actually exits or is killed.

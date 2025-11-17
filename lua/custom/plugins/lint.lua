@@ -6,25 +6,47 @@
 -- :MasonInstall golangci-lint eslint_d ruff luacheck shellcheck
 
 return {
-  {
-    'mfussenegger/nvim-lint',
-    -- event = { 'BufReadPre', 'BufNewFile' }, -- Events to trigger loading of
-    -- the plugin
-    config = function()
-      -- In your nvim-lint plugin configuration (e.g., using lazy.nvim)
-      local lint = require 'lint'
-
-      lint.linters_by_ft = {
-        go = { 'golangcilint' },
-      }
-
-      -- Autocommand to trigger linting on save (ensure this is still relevant for your setup)
-      vim.api.nvim_create_autocmd({ 'BufWritePost', 'CursorHold', 'CursorHoldI', 'InsertLeave' }, {
-        group = vim.api.nvim_create_augroup('nvim-lint-golang', { clear = true }),
-        callback = function(args)
-          require('lint').try_lint()
-        end,
-      })
-    end,
-  },
+  -- {
+  --   'mfussenegger/nvim-lint',
+  --   -- event = { 'BufReadPre', 'BufNewFile' }, -- Events to trigger loading of
+  --   -- the plugin
+  --   config = function()
+  --     -- In your nvim-lint plugin configuration (e.g., using lazy.nvim)
+  --     local lint = require 'lint'
+  --
+  --     lint.linters_by_ft = {
+  --       go = { 'golangcilint' },
+  --     }
+  --
+  --     -- Customize golangcilint to lint current package
+  --     lint.linters.golangcilint.args = {
+  --       'run',
+  --       '--output.json.path=stdout',
+  --       -- Overwrite values possibly set in .golangci.yml
+  --       '--output.text.path=',
+  --       '--output.tab.path=',
+  --       '--output.html.path=',
+  --       '--output.checkstyle.path=',
+  --       '--output.code-climate.path=',
+  --       '--output.junit-xml.path=',
+  --       '--output.teamcity.path=',
+  --       '--output.sarif.path=',
+  --       '--issues-exit-code=0',
+  --       '--show-stats=false',
+  --       function()
+  --         local fp = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':h')
+  --         vim.notify(fp)
+  --         return fp
+  --       end,
+  --     }
+  --
+  --     -- Autocommand to trigger linting on save (ensure this is still relevant for your setup)
+  --     vim.api.nvim_create_autocmd({ 'BufWritePost', 'CursorHold', 'CursorHoldI', 'InsertLeave' }, {
+  --       group = vim.api.nvim_create_augroup('nvim-lint-golang', { clear = true }),
+  --       callback = function(args)
+  --         require('lint').try_lint()
+  --       end,
+  --     })
+  --   end,
+  -- },
 }
