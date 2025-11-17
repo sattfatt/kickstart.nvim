@@ -101,5 +101,7 @@ require('custom.internal.workspace').setup()
 require('custom.internal.golangci-lint').setup {
   events = { 'BufWritePost', 'BufReadPost' },
 }
+
+require('custom.internal.github').setup()
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
