@@ -366,6 +366,8 @@ return {
         tofu_ls = {
           filetypes = { 'terraform', 'tf' },
         },
+
+        copilot = {},
       }
 
       require('mason').setup()
