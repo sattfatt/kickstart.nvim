@@ -6,12 +6,25 @@ local M = {}
 
 M.namespace = vim.api.nvim_create_namespace 'golangci_lint'
 
+-- Configuration options
+M.config = {
+  use_quickfix = false, -- Set to true to auto-populate quickfix list on lint
+}
+
 -- Map golangci-lint severity to vim.diagnostic.severity
 local severity_map = {
   error = vim.diagnostic.severity.ERROR,
   warning = vim.diagnostic.severity.WARN,
   info = vim.diagnostic.severity.INFO,
   hint = vim.diagnostic.severity.HINT,
+}
+
+-- Map severity to quickfix type
+local qf_type_map = {
+  error = 'E',
+  warning = 'W',
+  info = 'I',
+  hint = 'N',
 }
 
 local function parse_json_output(output)
@@ -65,6 +78,37 @@ local function get_diagnostics_for_buffer(data, bufnr)
   return diagnostics
 end
 
+local function get_quickfix_list(data)
+  local qf_list = {}
+
+  if not data.Issues then
+    return qf_list
+  end
+
+  for _, issue in ipairs(data.Issues) do
+    local pos = issue.Pos or {}
+    local filepath = pos.Filename or ''
+
+    if filepath ~= '' then
+      local lnum = pos.Line or 1 -- Keep 1-indexed for quickfix
+      local col = pos.Column or 1
+
+      local qf_type = qf_type_map[issue.Severity] or 'W'
+      local linter = issue.FromLinter or 'golangci-lint'
+
+      table.insert(qf_list, {
+        filename = filepath,
+        lnum = lnum,
+        col = col,
+        text = string.format('[%s] %s', linter, issue.Text or 'Unknown issue'),
+        type = qf_type,
+      })
+    end
+  end
+
+  return qf_list
+end
+
 local function scope(bufnr, root)
   if root then
     local go_mod = vim.fs.find('go.mod', {
@@ -83,8 +127,9 @@ local function scope(bufnr, root)
   return dir
 end
 
-function M.lint(bufnr, root)
+function M.lint(bufnr, root, opts)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
+  opts = opts or {}
 
   if vim.bo[bufnr].filetype ~= 'go' then
     return
@@ -121,15 +166,23 @@ function M.lint(bufnr, root)
       end
 
       local diagnostics = {}
+      local data = nil
 
       if obj.stdout and obj.stdout ~= '' then
-        local data = parse_json_output(obj.stdout)
+        data = parse_json_output(obj.stdout)
         if data then
           diagnostics = get_diagnostics_for_buffer(data, bufnr)
         end
       end
 
       vim.diagnostic.set(M.namespace, bufnr, diagnostics)
+
+      -- Populate quickfix list if enabled or explicitly requested
+      if (M.config.use_quickfix or opts.use_quickfix) and data then
+        local qf_list = get_quickfix_list(data)
+        vim.fn.setqflist(qf_list, 'r') -- 'r' replaces the list
+        vim.fn.setqflist({}, 'a', { title = 'golangci-lint' })
+      end
     end)
   end)
 end
@@ -141,6 +194,11 @@ end
 
 function M.setup(opts)
   opts = opts or {}
+
+  -- Set config options
+  if opts.use_quickfix ~= nil then
+    M.config.use_quickfix = opts.use_quickfix
+  end
 
   local group = vim.api.nvim_create_augroup('GolangciLint', { clear = true })
 
@@ -166,6 +224,18 @@ function M.setup(opts)
     M.lint(nil, true)
     vim.notify 'lint complete'
   end, { desc = 'Run golangci-lint on current buffer' })
+
+  vim.api.nvim_create_user_command('GolangciLintQuickfix', function()
+    vim.notify 'running lint and populating quickfix list'
+    M.lint(nil, false, { use_quickfix = true })
+    vim.notify 'lint complete - check quickfix list'
+  end, { desc = 'Run golangci-lint and populate quickfix list' })
+
+  vim.api.nvim_create_user_command('GolangciLintAllQuickfix', function()
+    vim.notify 'running lint from module root and populating quickfix list'
+    M.lint(nil, true, { use_quickfix = true })
+    vim.notify 'lint complete - check quickfix list'
+  end, { desc = 'Run golangci-lint on module and populate quickfix list' })
 
   vim.api.nvim_create_user_command('GolangciLintClear', function()
     M.clear()
