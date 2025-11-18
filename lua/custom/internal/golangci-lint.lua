@@ -150,14 +150,17 @@ function M.lint(bufnr, root, opts)
     '--issues-exit-code=0',
     '--show-stats=false',
     '--path-mode=abs',
-    '--new-from-rev=origin/main',
   }
 
-  if not root then
-    table.insert(cmd, '--new-from-rev=origin/main')
-  end
+  -- if not root then
+  --   table.insert(cmd, '--new-from-rev=origin/main')
+  -- end
 
-  table.insert(cmd, dir .. '/...')
+  -- Create animated loading notification
+  local notif = vim.notify('Running golangci-lint...', vim.log.levels.INFO, {
+    title = 'golangci-lint',
+    animate = true,
+  })
 
   vim.system(cmd, { text = true, cwd = dir }, function(obj)
     vim.schedule(function()
@@ -175,13 +178,25 @@ function M.lint(bufnr, root, opts)
         end
       end
 
+      -- Close the loading notification
+      if notif and type(notif) == 'table' and notif.close then
+        notif:close()
+      end
+
       vim.diagnostic.set(M.namespace, bufnr, diagnostics)
+
+      -- Show completion notification
+      local issue_count = data and data.Issues and #data.Issues or 0
+      vim.notify(string.format('Found %d issue(s)', issue_count), vim.log.levels.INFO, {
+        title = 'golangci-lint',
+      })
 
       -- Populate quickfix list if enabled or explicitly requested
       if (M.config.use_quickfix or opts.use_quickfix) and data then
         local qf_list = get_quickfix_list(data)
         vim.fn.setqflist(qf_list, 'r') -- 'r' replaces the list
         vim.fn.setqflist({}, 'a', { title = 'golangci-lint' })
+        vim.cmd 'copen' -- Auto-open quickfix list
       end
     end)
   end)
@@ -216,25 +231,21 @@ function M.setup(opts)
   vim.api.nvim_create_user_command('GolangciLint', function()
     vim.notify 'running lint relative to origin/main'
     M.lint(nil, false)
-    vim.notify 'lint complete'
   end, { desc = 'Run golangci-lint on current buffer' })
 
   vim.api.nvim_create_user_command('GolangciLintAll', function()
     vim.notify 'running lint from module root relative to current buffer'
     M.lint(nil, true)
-    vim.notify 'lint complete'
   end, { desc = 'Run golangci-lint on current buffer' })
 
   vim.api.nvim_create_user_command('GolangciLintQuickfix', function()
     vim.notify 'running lint and populating quickfix list'
     M.lint(nil, false, { use_quickfix = true })
-    vim.notify 'lint complete - check quickfix list'
   end, { desc = 'Run golangci-lint and populate quickfix list' })
 
   vim.api.nvim_create_user_command('GolangciLintAllQuickfix', function()
     vim.notify 'running lint from module root and populating quickfix list'
     M.lint(nil, true, { use_quickfix = true })
-    vim.notify 'lint complete - check quickfix list'
   end, { desc = 'Run golangci-lint on module and populate quickfix list' })
 
   vim.api.nvim_create_user_command('GolangciLintClear', function()
