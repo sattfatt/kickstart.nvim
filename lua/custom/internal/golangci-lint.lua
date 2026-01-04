@@ -150,6 +150,8 @@ function M.lint(bufnr, root, opts)
     '--issues-exit-code=0',
     '--show-stats=false',
     '--path-mode=abs',
+    '--max-issues-per-linter=0',
+    '--max-same-issues=0',
   }
 
   -- if not root then
