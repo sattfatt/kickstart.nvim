@@ -74,6 +74,9 @@ M.setup = function()
 
   -- Keep folds open by default
   vim.opt.foldlevelstart = 99
+
+  -- auto read updated files
+  vim.opt.autoread = true
 end
 
 return M

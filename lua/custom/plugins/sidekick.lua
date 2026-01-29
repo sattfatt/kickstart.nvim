@@ -3,6 +3,12 @@ return {
     'folke/sidekick.nvim',
     opts = {
       cli = {
+        tools = {
+          opencode = {
+            cmd = { 'opencode' },
+            env = { OPENCODE_THEME = 'system' },
+          },
+        },
         prompts = {
           implement = {
             msg = "Implement what I've described in the comment at this location",
@@ -29,6 +35,7 @@ return {
         end,
         desc = 'Claude CLI',
       },
+      
       {
         '<leader>ap',
         function()

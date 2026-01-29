@@ -26,7 +26,13 @@ return {
       'neovim/nvim-lspconfig',
       'nvim-treesitter/nvim-treesitter',
     },
-    opts = {},
+    opts = {
+      run_in_floaterm = true,
+      floaterm = {
+        posititon = 'bottom', -- note: typo in go.nvim source code
+        height = 0.4,
+      },
+    },
     config = function(_, opts)
       require('go').setup(opts)
       local format_sync_grp = vim.api.nvim_create_augroup('GoFormat', {})
@@ -45,6 +51,7 @@ return {
       { '<leader>te', with_env 'GoTestFunc -v', desc = 'run nearest test' },
       { '<leader>tf', with_env 'GoTestFile -v', desc = 'run file tests' },
       { '<leader>tp', with_env 'GoTestPkg -v', desc = 'run package tests' },
+      { '<leader>td', with_env 'GoDebug -n', desc = 'run nearest tests with debug' },
     },
   },
 }

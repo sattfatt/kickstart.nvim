@@ -31,6 +31,7 @@ return {
           },
         }
 
+        
         vim.keymap.set('n', '<leader>ao', ':vert Rest open<CR>', { desc = '[a]pi [o]pen [a]pi http result pane' })
         vim.keymap.set('n', '<leader>ar', ':vert Rest run<CR>', { desc = '[a]pi [r]un http under cursor' })
         vim.keymap.set('n', '<leader>ae', ':Rest env select<CR>', { desc = '[a]pi [s]elect env to use' })
