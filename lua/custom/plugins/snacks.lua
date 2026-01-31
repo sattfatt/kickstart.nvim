@@ -19,6 +19,7 @@ return {
       words = { enabled = true },
       indent = { enabled = true },
       toggle = {},
+      gh = {},
     },
     keys = {
       {
@@ -69,6 +70,21 @@ return {
           Snacks.toggle.diagnostics()
         end,
         desc = '[t]oggle [d]iagnostics',
+      },
+
+      {
+        '<leader>gp',
+        function()
+          Snacks.picker.gh_pr()
+        end,
+        desc = 'GitHub Pull Requests (open)',
+      },
+      {
+        '<leader>gP',
+        function()
+          Snacks.picker.gh_pr { state = 'all' }
+        end,
+        desc = 'GitHub Pull Requests (all)',
       },
     },
   },
