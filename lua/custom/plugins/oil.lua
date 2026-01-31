@@ -1,0 +1,24 @@
+return {
+  {
+    'stevearc/oil.nvim',
+    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+    config = function()
+      require('oil').setup {
+        view_options = {
+          -- Show files and directories that start with "."
+          show_hidden = true,
+        },
+      }
+      vim.keymap.set('n', '<leader>fe', '<CMD>Oil<CR>', { desc = 'open [f]ile [e]xplorer' })
+
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'OilActionsPost',
+        callback = function(event)
+          if event.data.actions.type == 'move' then
+            Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
+          end
+        end,
+      })
+    end,
+  },
+}

@@ -35,7 +35,6 @@ return {
         end,
         desc = 'Claude CLI',
       },
-      
       {
         '<leader>ap',
         function()
