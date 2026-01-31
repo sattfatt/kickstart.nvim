@@ -411,8 +411,6 @@ function M.setup(opts)
     vim.keymap.set('n', '<leader>gpr', M.refresh, { desc = 'Refresh GitHub PR comments' })
     vim.keymap.set('n', '<leader>gpq', M.quickfix, { desc = 'Load PR comments to quickfix' })
   end
-
-  vim.notify('GitHub PR Comment Viewer loaded. Use :GHPRToggle or <leader>gpt to toggle', vim.log.levels.INFO)
 end
 
 return M
