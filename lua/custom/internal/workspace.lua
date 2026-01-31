@@ -12,7 +12,6 @@ local function run_workspace_setup()
 
   for workspace_path, setup_func in pairs(M.workspaces) do
     if cwd:find(workspace_path, 1, true) == 1 then -- Match workspace
-      vim.notify('Matched workspace: ' .. workspace_path, 'info')
       setup_func()
       return -- Stop after the first match
     end

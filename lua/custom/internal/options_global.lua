@@ -77,6 +77,8 @@ M.setup = function()
 
   -- auto read updated files
   vim.opt.autoread = true
+
+  vim.keymap.set('n', '<leader>sm', require('custom.internal.misepicker').pick_tasks, { desc = 'seach workflows and launch' })
 end
 
 return M
