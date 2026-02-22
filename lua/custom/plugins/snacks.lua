@@ -53,7 +53,7 @@ return {
         desc = 'Show [h]istory',
       },
       {
-        '<lader>dd',
+        '<leader>dd',
         function()
           Snacks.toggle.dim()
         end,
@@ -382,13 +382,13 @@ return {
         end,
         desc = 'Location List',
       },
-      {
-        '<leader>sm',
-        function()
-          require('custom.internal.misepicker').pick_tasks()
-        end,
-        desc = 'Mise Tasks',
-      },
+      -- {
+      --   '<leader>sm',
+      --   function()
+      --     require('custom.internal.misepicker').pick_tasks()
+      --   end,
+      --   desc = 'Mise Tasks',
+      -- },
       {
         '<leader>sM',
         function()

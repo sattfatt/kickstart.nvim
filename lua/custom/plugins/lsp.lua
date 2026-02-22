@@ -7,7 +7,15 @@ return {
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       'folke/snacks.nvim',
-      { 'folke/neodev.nvim', opts = {} },
+      {
+        'folke/lazydev.nvim',
+        ft = 'lua',
+        opts = {
+          library = {
+            { path = 'snacks.nvim', words = { 'Snacks' } },
+          },
+        },
+      },
       { 'saghen/blink.cmp' },
     },
     config = function()
