@@ -28,5 +28,12 @@ return {
 
       vim.keymap.set('n', '<leader>db', ':tabnew<CR>:DBUI<CR>', { noremap = true, silent = true, desc = 'Open DB in another tab' })
     end,
+    keys = {
+      {
+        '<Leader>db',
+        ':tabnew<CR>:DBUI<CR>',
+        desc = 'toggle db ui',
+      },
+    },
   },
 }

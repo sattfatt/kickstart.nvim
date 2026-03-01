@@ -22,6 +22,7 @@ return {
       gh = {},
       picker = {},
       explorer = {},
+      dashboard = {},
     },
     keys = {
       {
@@ -430,6 +431,48 @@ return {
           Snacks.picker.colorschemes()
         end,
         desc = 'Colorschemes',
+      },
+      -- terminal
+      {
+        '<leader>lg',
+        function()
+          Snacks.terminal('lazygit', { win = { style = 'terminal', width = 0, height = 0 } })
+        end,
+        desc = 'Open lazy git',
+      },
+      {
+        '<leader>ld',
+        function()
+          Snacks.terminal('lazydocker', { win = { style = 'terminal', width = 0, height = 0 } })
+        end,
+        desc = 'Open lazy docker',
+      },
+      {
+        '<leader>lh',
+        function()
+          Snacks.terminal('htop', { win = { style = 'terminal', width = 0, height = 0 } })
+        end,
+        desc = 'Show system resources in htop',
+      },
+      {
+        '<leader>li',
+        function()
+          Snacks.terminal(
+            'jira issue list -a$(jira me) -Rx "done" -s "In Progress" -s "Selected For Development" -s "Engineering Backlog"',
+            { win = { style = 'terminal', width = 0, height = 0 } }
+          )
+        end,
+        desc = 'Show my jira issues in backlog, selected for dev, and in progress',
+      },
+      {
+        '<leader>le',
+        function()
+          Snacks.terminal(
+            'jira epic list --table -a satyam.patel@rockbot.com -s "In Progress" -s "Selected For Development" -s "Engineering Backlog"',
+            { win = { style = 'terminal', width = 0, height = 0 } }
+          )
+        end,
+        desc = 'Show my jira epics in backlog, selected for dev, and in progress',
       },
       -- LSP
       {
