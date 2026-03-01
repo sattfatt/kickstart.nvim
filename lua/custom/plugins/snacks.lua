@@ -436,21 +436,21 @@ return {
       {
         '<leader>lg',
         function()
-          Snacks.terminal('lazygit', { win = { style = 'terminal', width = 0, height = 0 } })
+          Snacks.terminal('lazygit', { win = { style = 'terminal', width = 0, height = 0, wo = { winblend = 10 } } })
         end,
         desc = 'Open lazy git',
       },
       {
         '<leader>ld',
         function()
-          Snacks.terminal('lazydocker', { win = { style = 'terminal', width = 0, height = 0 } })
+          Snacks.terminal('lazydocker', { win = { style = 'terminal', width = 0, height = 0, wo = { winblend = 10 } } })
         end,
         desc = 'Open lazy docker',
       },
       {
         '<leader>lh',
         function()
-          Snacks.terminal('htop', { win = { style = 'terminal', width = 0, height = 0 } })
+          Snacks.terminal('htop', { win = { style = 'terminal', width = 0, height = 0, wo = { winblend = 10 } } })
         end,
         desc = 'Show system resources in htop',
       },
@@ -459,7 +459,7 @@ return {
         function()
           Snacks.terminal(
             'jira issue list -a$(jira me) -Rx "done" -s "In Progress" -s "Selected For Development" -s "Engineering Backlog"',
-            { win = { style = 'terminal', width = 0, height = 0 } }
+            { win = { style = 'terminal', width = 0, height = 0, wo = { winblend = 10 } } }
           )
         end,
         desc = 'Show my jira issues in backlog, selected for dev, and in progress',
@@ -469,7 +469,7 @@ return {
         function()
           Snacks.terminal(
             'jira epic list --table -a satyam.patel@rockbot.com -s "In Progress" -s "Selected For Development" -s "Engineering Backlog"',
-            { win = { style = 'terminal', width = 0, height = 0 } }
+            { win = { style = 'terminal', width = 0, height = 0, wo = { winblend = 10 } } }
           )
         end,
         desc = 'Show my jira epics in backlog, selected for dev, and in progress',
