@@ -1,3 +1,11 @@
+local function ensure_db_proxy(env, port)
+  vim.fn.system('pgrep -f "rockbot db-connect --env ' .. env .. '"')
+  if vim.v.shell_error ~= 0 then
+    vim.fn.jobstart({ 'rockbot', 'db-connect', '--env', env, '--port', tostring(port) }, { detach = true })
+    vim.notify('Started rockbot db-connect --env ' .. env .. ' --port ' .. port)
+  end
+end
+
 return {
   {
     'tpope/vim-dadbod',
@@ -21,18 +29,21 @@ return {
       vim.g.db_ui_save_location = vim.fn.stdpath 'config' .. '/db_ui'
 
       vim.g.dbs = {
-        dev = 'mysql://satyam.patel@127.0.0.1:1234/dev_latest',
-        replica = 'mysql:///rockbot_prod?login-path=replica',
+        dev = 'mysql://satyam.patel@127.0.0.1:1233/dev_latest',
+        replica = 'mysql://satyam.patel@127.0.0.1:1234/rockbot_prod',
         localhost = 'mysql://root@localhost/mysqltestdb',
       }
-
-      vim.keymap.set('n', '<leader>db', ':tabnew<CR>:DBUI<CR>', { noremap = true, silent = true, desc = 'Open DB in another tab' })
     end,
+    cmd = { 'DBUI' },
     keys = {
       {
         '<Leader>db',
-        ':tabnew<CR>:DBUI<CR>',
-        desc = 'toggle db ui',
+        function()
+          ensure_db_proxy('dev', 1233)
+          ensure_db_proxy('stage', 1234)
+          vim.cmd 'tabnew | DBUI'
+        end,
+        desc = 'Open DB UI',
       },
     },
   },
