@@ -47,6 +47,24 @@ return {
       }
 
       vim.treesitter.language.register('brightscript', 'brs')
+
+      -- mojo treesitter parser
+      ---@diagnostic disable-next-line: inject-field
+      parser_config.mojo = {
+        install_info = {
+          url = 'https://github.com/lsh/tree-sitter-mojo',
+          files = { 'src/parser.c', 'src/scanner.c' },
+          branch = 'main',
+        },
+        filetype = 'mojo',
+      }
+
+      vim.filetype.add({
+        extension = {
+          mojo = 'mojo',
+          ['🔥'] = 'mojo',
+        },
+      })
     end,
   },
 }

@@ -383,6 +383,10 @@ return {
         vim.lsp.enable(server_name)
       end
 
+      -- LSPs not in Mason registry (installed globally)
+      vim.lsp.config('mojo', {})
+      vim.lsp.enable('mojo')
+
       require('custom.internal.lsp_custom').setup(capabilities)
     end,
   },
