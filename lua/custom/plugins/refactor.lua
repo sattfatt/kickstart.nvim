@@ -2,13 +2,18 @@ return {
   {
     'ThePrimeagen/refactoring.nvim',
     dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
+      'lewis6991/async.nvim',
     },
-    config = function()
-      require('refactoring').setup {
-        vim.keymap.set('x', '<leader>re', ':Refactor extract '),
-      }
-    end,
+    lazy = false,
+    keys = {
+      {
+        '<leader>re',
+        function()
+          require('refactoring').select_refactor()
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Select refactor',
+      },
+    },
   },
 }
