@@ -14,7 +14,7 @@ end
 local function with_env(cmd)
   return function()
     load_env()
-    local gomod = vim.fn.findfile('go.mod', '.;')
+    local gomod = vim.fn.findfile('go.mod', '.;') --[[@as string]]
     if gomod ~= '' then
       vim.cmd('lcd ' .. vim.fn.fnameescape(vim.fn.fnamemodify(gomod, ':p:h')))
     end

@@ -3,8 +3,8 @@ return {
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
+      'mason-org/mason.nvim',
+      'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       'folke/snacks.nvim',
       {
@@ -65,36 +65,38 @@ return {
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
-          -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
-          ---@param client vim.lsp.Client
-          ---@param method vim.lsp.protocol.Method
-          ---@param bufnr? integer some lsp support methods only in specific files
-          ---@return boolean
-          local function client_supports_method(client, method, bufnr)
-            if vim.fn.has 'nvim-0.11' == 1 then
-              return client:supports_method(method, bufnr)
-            else
-              ---@diagnostic disable-next-line: param-type-mismatch
-              return client.supports_method(method, { bufnr = bufnr })
-            end
-          end
-
-          -- NOTE: Remember that Lua is a real programming language, and as such it is possible
-          -- to define small helper and utility functions so you don't have to repeat yourself.
-          --
-          -- In this case, we create a function that lets us more easily define mappings specific
-          -- for LSP related items. It sets the mode, buffer and description for us each time.
           local map = function(keys, func, desc)
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          -- The following code creates a keymap to toggle inlay hints in your
-          -- code, if the language server you are using supports them
-          --
-          -- This may be unwanted, since they displace some of your code
-          map('<leader>th', function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-          end, '[T]oggle Inlay [H]ints')
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+          if client and client:supports_method('textDocument/inlayHint', event.buf) then
+            map('<leader>th', function()
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+            end, '[T]oggle Inlay [H]ints')
+          end
+
+          if client and client:supports_method('textDocument/documentHighlight', event.buf) then
+            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+              buffer = event.buf,
+              group = highlight_augroup,
+              callback = vim.lsp.buf.document_highlight,
+            })
+            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+              buffer = event.buf,
+              group = highlight_augroup,
+              callback = vim.lsp.buf.clear_references,
+            })
+            vim.api.nvim_create_autocmd('LspDetach', {
+              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+              callback = function(event2)
+                vim.lsp.buf.clear_references()
+                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+              end,
+            })
+          end
 
           -- handle bashls + dev-tools-ls worspace conflict
           local bufnr = event.buf
@@ -115,13 +117,6 @@ return {
                 cl.server_capabilities.workspaceSymbolProvider = false
                 print('Disabled workspace symbols for ' .. cl.name .. ' (multiple providers detected)')
               end
-            end
-          end
-
-          local hasDevToolsLSP = false
-          for _, cl in ipairs(workspace_symbol_providers) do
-            if cl.name == 'dev_tools_lsp' then
-              hasDevToolsLSP = true
             end
           end
 
@@ -181,6 +176,11 @@ return {
         severity_sort = true,
         float = { border = 'rounded', source = 'if_many' },
         underline = { severity = vim.diagnostic.severity.ERROR },
+        jump = {
+          on_jump = function(_, bufnr)
+            vim.diagnostic.open_float { bufnr = bufnr, scope = 'cursor', focus = false }
+          end,
+        },
         signs = vim.g.have_nerd_font and {
           text = {
             [vim.diagnostic.severity.ERROR] = '󰅚 ',
@@ -202,7 +202,16 @@ return {
             return diagnostic_message[diagnostic.severity]
           end,
         },
+        virtual_lines = false,
       }
+
+      vim.keymap.set('n', '<leader>tl', function()
+        local current = vim.diagnostic.config()
+        vim.diagnostic.config {
+          virtual_lines = not current.virtual_lines,
+          virtual_text = current.virtual_lines and { source = 'if_many', spacing = 2 } or false,
+        }
+      end, { desc = '[T]oggle virtual_[L]ines' })
 
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
@@ -378,14 +387,16 @@ return {
         automatic_enable = false,
       }
 
+      vim.lsp.config('*', { capabilities = capabilities })
+
       for server_name, config in pairs(servers) do
-        vim.lsp.config(server_name, config) -- (migrate to this once all lsps are updated)
+        vim.lsp.config(server_name, config)
         vim.lsp.enable(server_name)
       end
 
       -- LSPs not in Mason registry (installed globally)
       vim.lsp.config('mojo', {})
-      vim.lsp.enable('mojo')
+      vim.lsp.enable 'mojo'
 
       require('custom.internal.lsp_custom').setup(capabilities)
     end,
